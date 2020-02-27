@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <!-- polyfill -->
+    <script src="./inc/shim/Base64.js" type="text/javascript"></script>
+    <script src="./inc/shim/Base64binary.js" type="text/javascript"></script>
+    <script src="./inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+    <!-- midi.js package -->
+    <script src="./js/midi/audioDetect.js" type="text/javascript"></script>
+    <script src="./js/midi/gm.js" type="text/javascript"></script>
+    <script src="./js/midi/loader.js" type="text/javascript"></script>
+    <script src="./js/midi/plugin.audiotag.js" type="text/javascript"></script>
+    <script src="./js/midi/plugin.webaudio.js" type="text/javascript"></script>
+    <script src="./js/midi/plugin.webmidi.js" type="text/javascript"></script>
+    <!-- utils -->
+    <script src="./js/util/dom_request_xhr.js" type="text/javascript"></script>
+    <script
+      src="./js/util/dom_request_script.js"
+      type="text/javascript"
+    ></script>
+    <link rel="stylesheet" type="text/css" href="piano.css" />
+    <script src="https://npmcdn.com/vexflow@1.2.90/releases/vexflow-debug.js"></script>
+  </head>
+  <body>
+    <div id="centrer" class="center-div">
+      <div id="boo"></div>
+      <div id="piano">
+        <div class="keys">
+          <div class="key" onclick="click_note('DO')">
+            <span class="note-name"> DO </span>
+          </div>
+          <div class="key black black1" data-key="1"></div>
+          <div class="key" onclick="click_note('RE')">
+            <span class="note-name"> RE </span>
+          </div>
+          <div class="key black black3" data-key="3"></div>
+          <div class="key" onclick="click_note('MI')">
+            <span class="note-name"> MI </span>
+          </div>
+          <div class="key" onclick="click_note('FA')">
+            <span class="note-name"> FA</span>
+          </div>
+          <div class="key black black1" data-key="6"></div>
+          <div class="key" onclick="click_note('SOL')">
+            <span class="note-name"> SOL </span>
+          </div>
+          <div class="key black black2" data-key="8"></div>
+          <div class="key" onclick="click_note('LA')">
+            <span class="note-name"> LA </span>
+          </div>
+          <div class="key black black3" data-key="10"></div>
+          <div class="key" onclick="click_note('SI')">
+            <span class="note-name"> SI </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const VF = Vex.Flow;
+      const NB_NOTES = 1;
+      const notes = [
+        { name: "DO", midi: 60, vexflow: "C" },
+        { name: "RE", midi: 62, vexflow: "D" },
+        { name: "MI", midi: 64, vexflow: "E" },
+        { name: "FA", midi: 65, vexflow: "F" },
+        { name: "SOL", midi: 67, vexflow: "G" },
+        { name: "LA", midi: 69, vexflow: "A" },
+        { name: "SI", midi: 71, vexflow: "B" }
+      ];
+      var liste_notes = [];
+
+      const delay = 1; // play one note every quarter second
+      var note = 50; // the MIDI note
+      var velocity = 127; // how hard the note hits
+
+      // Create an SVG renderer and attach it to the DIV element named "boo".
+      var div = document.getElementById("boo");
+      var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+
+      // Size our svg:
+      renderer.resize(100, 150);
+
+      // And get a drawing context:
+      var context = renderer.getContext();
+
+      window.onload = MIDI.loadPlugin({
+        soundfontUrl: "./soundfont/",
+        instrument: "acoustic_grand_piano",
+        onprogress: function(state, progress) {
+          console.log(state, progress);
+        },
+        onsuccess: function() {
+          write_note();
+        }
+      });
+
+      function click_note(note) {
+        const note_as_note = notes.find(x => x.name === note);
+        if (typeof note === "undefined") console.log("unknown note");
+        MIDI.setVolume(0, 127);
+        MIDI.noteOn(0, note_as_note.midi, velocity, 0);
+        MIDI.noteOff(0, 60, 0.75);
+        write_note();
+      }
+
+      function write_note() {
+        var delay_multiple_notes = delay;
+        liste_notes = [];
+        context.clear();
+        // play the note
+        MIDI.setVolume(0, 127);
+        for (var i = 0; i < NB_NOTES; i++) {
+          const note = notes[Math.floor(Math.random() * notes.length)];
+          console.log("note", note);
+          MIDI.noteOn(0, note.midi, velocity, delay_multiple_notes);
+          MIDI.noteOff(0, 60, delay_multiple_notes++ + 0.75);
+          if (typeof note === "undefined") console.log("unknown note");
+          else liste_notes.push(note);
+        }
+
+        // Create a stave at position 10, 40 of width 400 on the canvas.
+        var stave = new VF.Stave(10, 40, 400);
+
+        // Add a clef and time signature.
+        stave.addClef("treble");
+
+        // Connect it to the rendering context and draw!
+        stave.setContext(context).draw();
+
+        // Create a voice in 4/4 and add above notes
+        var voice = new VF.Voice({ num_beats: NB_NOTES, beat_value: 4 });
+        voice.addTickables(
+          liste_notes.map(
+            note =>
+              new VF.StaveNote({
+                clef: "treble",
+                keys: [note.vexflow + "/4"],
+                duration: "q"
+              })
+          )
+        );
+
+        // Format and justify the notes to 400 pixels.
+        var formatter = new VF.Formatter()
+          .joinVoices([voice])
+          .format([voice], 400);
+
+        // Render voice
+        voice.draw(context, stave);
+
+        console.log(
+          "liste_notes",
+          liste_notes.map(x => x.keys)
+        );
+      }
+    </script>
+  </body>
+</html>
