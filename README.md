@@ -6,7 +6,5 @@ To start, run :
 
 ```
 npm install -g http-server
-http-server . -p 8080 --cors -S .\cert.pem
+http-server . -p 8080 --cors
 ```
-
-cert.pem is here because MIDI API does not run without certificate (WIP).
