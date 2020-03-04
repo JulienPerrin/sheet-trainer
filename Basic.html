@@ -24,7 +24,17 @@
   </head>
   <body>
     <div id="centrer" class="center-div">
-      <div id="boo"></div>
+      <div style="display: inline; margin: 0 1em 0 1em; width: 30%;">
+        <div id="boo"></div>
+        <span
+          ><h3>Right :</h3>
+          <a id="right">0</a></span
+        >
+        <span
+          ><h3>Wrong :</h3>
+          <a id="wrong">0</a></span
+        >
+      </div>
       <div id="piano">
         <div class="keys">
           <div class="key" onclick="click_note('DO')">
@@ -71,9 +81,12 @@
       ];
       var liste_notes = [];
 
-      const delay = 1; // play one note every quarter second
+      const delay = 0.5; // play one note every quarter second
       var note = 50; // the MIDI note
       var velocity = 127; // how hard the note hits
+
+      var right = 0;
+      var wrong = 0;
 
       // Create an SVG renderer and attach it to the DIV element named "boo".
       var div = document.getElementById("boo");
@@ -89,20 +102,85 @@
         soundfontUrl: "./soundfont/",
         instrument: "acoustic_grand_piano",
         onprogress: function(state, progress) {
-          console.log(state, progress);
+          //console.log(state, progress);
         },
         onsuccess: function() {
           write_note();
+          listen();
+        },
+        onerror: function() {
+          console.log("acoustic_grand_piano error");
         }
       });
 
+      function listen() {
+        if (navigator.requestMIDIAccess) {
+          console.log("This browser supports WebMIDI!");
+        } else {
+          console.log("WebMIDI is not supported in this browser.");
+        }
+
+        navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+      }
+
+      function onMIDISuccess(midiAccess) {
+        for (var input of midiAccess.inputs.values()) {
+          input.onmidimessage = getMIDIMessage;
+        }
+      }
+
+      function getMIDIMessage(message) {
+        //console.log(message);
+        var command = message.data[0];
+        var note_jouee = message.data[1];
+        var velocity_note_jouee = message.data.length > 2 ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+
+        switch (command) {
+          case 144: // noteOn
+            if (velocity_note_jouee > 0) {
+              note_equivalente = (note_jouee % 12) + 60;
+              note_equivalente_as_note = notes.find(
+                x => x.midi === note_equivalente
+              );
+              click_note(note_equivalente_as_note.name);
+              //MIDI.noteOn(0, note_jouee, velocity_note_jouee);
+            } /*else {
+                MIDI.noteOff(0, note_jouee);
+              }*/
+            break;
+          case 128: // noteOff
+            MIDI.noteOff(1, note);
+            break;
+          // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
+        }
+      }
+
+      function onMIDIFailure() {
+        console.log("Could not access your MIDI devices.");
+      }
+
       function click_note(note) {
         const note_as_note = notes.find(x => x.name === note);
-        if (typeof note === "undefined") console.log("unknown note");
-        MIDI.setVolume(0, 127);
+        if (typeof note_as_note === "undefined") console.log("unknown note");
+        if (note_as_note === liste_notes[0]) right++;
+        else {
+          console.log(
+            "Wrong note. Played : {0} but was : {1}"
+              .replace("{0}", note_as_note.name)
+              .replace("{1}", liste_notes[0].name)
+          );
+          wrong++;
+        }
+        /*MIDI.setVolume(0, 127);
         MIDI.noteOn(0, note_as_note.midi, velocity, 0);
-        MIDI.noteOff(0, 60, 0.75);
+        MIDI.noteOff(0, 60, 0.25);*/
+        update_right_wrong();
         write_note();
+      }
+
+      function update_right_wrong() {
+        document.getElementById("right").innerHTML = right;
+        document.getElementById("wrong").innerHTML = wrong;
       }
 
       function write_note() {
@@ -113,7 +191,7 @@
         MIDI.setVolume(0, 127);
         for (var i = 0; i < NB_NOTES; i++) {
           const note = notes[Math.floor(Math.random() * notes.length)];
-          console.log("note", note);
+          //console.log("note", note);
           MIDI.noteOn(0, note.midi, velocity, delay_multiple_notes);
           MIDI.noteOff(0, 60, delay_multiple_notes++ + 0.75);
           if (typeof note === "undefined") console.log("unknown note");
@@ -150,10 +228,10 @@
         // Render voice
         voice.draw(context, stave);
 
-        console.log(
+        /*console.log(
           "liste_notes",
-          liste_notes.map(x => x.keys)
-        );
+          liste_notes.map(x => x.name)
+        );*/
       }
     </script>
   </body>
