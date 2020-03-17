@@ -22,6 +22,7 @@
     "@types/webmidi": "^2.0.4",
     "fibers": "^4.0.2",
     "html-webpack-plugin": "^3.2.0",
+    "midicube": "^0.6.1",
     "node-sass": "^4.13.1",
     "rxjs": "^6.5.4",
     "web-midi-api": "^2.0.7",

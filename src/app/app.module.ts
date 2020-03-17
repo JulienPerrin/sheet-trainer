@@ -5,6 +5,8 @@ import { AppComponent } from "./app.component";
 import { SheetComponent } from "./sheet/sheet.component";
 import { PianoComponent } from "./piano/piano.component";
 import { RightWrongComponent } from "./right-wrong/right-wrong.component";
+import { NoteInputService } from "./note.input.service";
+import { NoteOutputService } from "./note.output.service";
 
 @NgModule({
   declarations: [
@@ -14,7 +16,7 @@ import { RightWrongComponent } from "./right-wrong/right-wrong.component";
     RightWrongComponent
   ],
   imports: [BrowserModule, AppRoutingModule],
-  providers: [],
+  providers: [NoteInputService, NoteOutputService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
