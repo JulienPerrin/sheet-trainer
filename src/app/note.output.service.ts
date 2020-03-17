@@ -11,17 +11,17 @@ export class NoteOutputService {
   constructor() {}
 
   public jouerNote(note: string): void {
-    console.log("this.output.noteOn(0, ", MIDI.keyToNote[note], ",", 127, ")");
+    console.log("jouerNote : ", note, MIDI.keyToNote[note]);
     MIDI.setVolume(0, 127);
-    MIDI.noteOn(0, MIDI.keyToNote[note], 127, 5);
-    MIDI.noteOff(0, MIDI.keyToNote[note], 127, 5);
+    MIDI.noteOn(0, MIDI.keyToNote[note], 127);
+    MIDI.noteOff(0, MIDI.keyToNote[note], 127, 1);
   }
 
   public loadPianoSound(callback: () => void): void {
     MIDI.loadPlugin({
       soundfontUrl: "assets/soundfont/",
       instrument: "acoustic_grand_piano",
-      onerror: e => {
+      onerror: (e: any) => {
         console.error("Instrument cannot be loaded.", e);
         throw Error("Instrument cannot be loaded.");
       },
@@ -33,25 +33,28 @@ export class NoteOutputService {
     const command = message.data[0];
     const noteJouee = message.data[1];
     const velocityNoteJouee = message.data.length > 2 ? message.data[2] : 0;
-    // console.log("delay?", message.timeStamp);
     switch (command) {
       case 144:
         if (velocityNoteJouee > 0) {
           console.log(
-            "this.output.noteOn(0, ",
+            "push : ",
+            MIDI.keyToNote[noteJouee],
             noteJouee,
-            ",",
-            velocityNoteJouee,
-            ")"
+            velocityNoteJouee
           );
           MIDI.noteOn(0, noteJouee, velocityNoteJouee);
         } else {
-          console.log("this.output.noteOff(0, ", noteJouee, ")");
+          console.log(
+            "release : ",
+            MIDI.keyToNote[noteJouee],
+            noteJouee,
+            velocityNoteJouee
+          );
           MIDI.noteOff(0, noteJouee);
         }
         break;
       case 128:
-        console.log("this.output.noteOff(0, ", noteJouee, ")");
+        console.log("release : ", MIDI.keyToNote[noteJouee], noteJouee);
         MIDI.noteOff(0, noteJouee);
         break;
     }

@@ -1,4 +1,9 @@
-import { Component, AfterViewInit, AfterViewChecked } from "@angular/core";
+import {
+  Component,
+  AfterViewInit,
+  AfterViewChecked,
+  OnInit
+} from "@angular/core";
 import { NoteInputService } from "./note.input.service";
 import { NoteOutputService } from "./note.output.service";
 
@@ -8,7 +13,7 @@ import { NoteOutputService } from "./note.output.service";
   styleUrls: ["./app.component.css"],
   providers: []
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit {
   constructor(
     public noteInputService: NoteInputService,
     public noteOutputService: NoteOutputService
@@ -16,7 +21,7 @@ export class AppComponent implements AfterViewInit {
 
   title = "sheet-trainer";
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.noteOutputService.loadPianoSound(() =>
       this.noteInputService.loadMidiDevice(
         this.noteOutputService.outputMIDIMessage
