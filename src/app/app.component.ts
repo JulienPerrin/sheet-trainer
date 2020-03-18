@@ -1,11 +1,6 @@
-import {
-  Component,
-  AfterViewInit,
-  AfterViewChecked,
-  OnInit
-} from "@angular/core";
-import { NoteInputService } from "./note.input.service";
-import { NoteOutputService } from "./note.output.service";
+import { Component, OnInit } from "@angular/core";
+import { NoteInputService } from "./service/note-input.service";
+import { NoteOutputService } from "./service/note-output.service";
 
 @Component({
   selector: "app-root",

@@ -25,6 +25,7 @@
     "midicube": "^0.6.1",
     "node-sass": "^4.13.1",
     "rxjs": "^6.5.4",
+    "vexflow": "^1.2.90",
     "web-midi-api": "^2.0.7",
     "zone.js": "^0.10.2"
   },

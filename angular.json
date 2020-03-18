@@ -46,7 +46,10 @@
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": ["node_modules/midicube/releases/midicube.js"]
+            "scripts": [
+              "node_modules/midicube/releases/midicube.js",
+              "node_modules/vexflow/releases/vexflow-debug.js"
+            ]
           },
           "configurations": {
             "production": {

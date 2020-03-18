@@ -1,7 +1,5 @@
-import { Component, OnInit, OnChanges, AfterViewInit } from "@angular/core";
-import { from } from "rxjs";
-import { first, map } from "rxjs/operators";
-import { NoteOutputService } from "../note.output.service";
+import { Component, OnInit } from "@angular/core";
+import { NoteOutputService } from "../../service/note-output.service";
 
 @Component({
   selector: "app-piano",

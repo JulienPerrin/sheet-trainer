@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { SheetComponent } from "./sheet/sheet.component";
+import { SheetComponent } from "./component/sheet/sheet.component";
 
 const routes: Routes = [
   // tslint:disable-next-line: quotemark
