@@ -1,6 +1,6 @@
 import { Note } from "./note";
 
-class Notes {
+export class Notes {
   public static NOTES: Array<Note> = [
     new Note("A0", "A", 0, 21),
     new Note("Bb0", "BB", 0, 22),
@@ -92,13 +92,13 @@ class Notes {
     new Note("C8", "C", 8, 108)
   ];
 
-  public getNoteByMidi(midi: number) {
+  public static getNoteByMidi(midi: number): Note {
     return Notes.NOTES.filter(note => {
       return note.midi === midi;
     })[0];
   }
 
-  public getNoteByName(name: string) {
+  public static getNoteByName(name: string): Note {
     return Notes.NOTES.filter(note => {
       return note.name === name;
     })[0];

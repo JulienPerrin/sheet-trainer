@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { Note } from "src/app/data/note";
+import { SheetReading } from "src/app/data/sheet-reading";
 import { NoteGeneratorService } from "../../service/note-generator.service";
 
 declare const Vex: any;
 
-const NB_NOTES = 8;
 const VF = Vex.Flow;
 const STAVE_OUTPUT = 10;
 const STAVE_WIDTH = 356;
@@ -19,7 +20,7 @@ export class SheetComponent implements OnInit {
   constructor(private noteGeneratorService: NoteGeneratorService) {}
 
   private context: any;
-  public listeNotes: Array<string>;
+  private plisteNotes: Array<Note>;
 
   ngOnInit(): void {
     // Create an SVG renderer and attach it to the DIV element named "boo".
@@ -29,47 +30,51 @@ export class SheetComponent implements OnInit {
     this.context = renderer.getContext();
     renderer.resize(STAVE_WIDTH, STAVE_HEIGHT);
     this.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
-    this.remplirPartition();
   }
 
-  private remplirPartition(): void {
-    this.listeNotes = this.noteGeneratorService.generateRandomNoteList(
-      NB_NOTES
-    );
+  get listeNotes(): Array<Note> {
+    return this.plisteNotes;
+  }
 
-    this.context.clear();
+  @Input() set listeNotes(listeNotes: Array<Note>) {
+    if (listeNotes.length > 0) {
+      console.log(listeNotes);
+      this.plisteNotes = listeNotes;
 
-    // Create a stave at position 10, 0 of width 400 on the canvas.
-    const stave = new VF.Stave(STAVE_OUTPUT, 0, STAVE_WIDTH - STAVE_OUTPUT);
+      this.context.clear();
 
-    // Add a clef and time signature.
-    stave.addClef("treble");
+      // Create a stave at position 10, 0 of width 400 on the canvas.
+      const stave = new VF.Stave(STAVE_OUTPUT, 0, STAVE_WIDTH - STAVE_OUTPUT);
 
-    // Connect it to the rendering context and draw!
-    stave.setContext(this.context).draw();
+      // Add a clef and time signature.
+      stave.addClef("treble");
 
-    // Create a voice in 4/4 and add above notes
-    const voice = new VF.Voice({
-      num_beats: NB_NOTES,
-      beat_value: 4
-    });
-    voice.addTickables(
-      this.listeNotes.map(
-        note =>
-          new VF.StaveNote({
-            clef: "treble",
-            keys: [note + "/4"],
-            duration: "q"
-          })
-      )
-    );
+      // Connect it to the rendering context and draw!
+      stave.setContext(this.context).draw();
 
-    // Format and justify the notes to 400 pixels.
-    const formatter = new VF.Formatter()
-      .joinVoices([voice])
-      .format([voice], STAVE_WIDTH - TREBLE_WIDTH);
+      // Create a voice in 4/4 and add above notes
+      const voice = new VF.Voice({
+        num_beats: listeNotes.length,
+        beat_value: 4
+      });
+      voice.addTickables(
+        listeNotes.map(
+          note =>
+            new VF.StaveNote({
+              clef: "treble",
+              keys: [note.vexFlowName + "/" + note.vexFlowOctave],
+              duration: "q"
+            })
+        )
+      );
 
-    // Render voice
-    voice.draw(this.context, stave);
+      // Format and justify the notes to 400 pixels.
+      const formatter = new VF.Formatter()
+        .joinVoices([voice])
+        .format([voice], STAVE_WIDTH - TREBLE_WIDTH);
+
+      // Render voice
+      voice.draw(this.context, stave);
+    }
   }
 }

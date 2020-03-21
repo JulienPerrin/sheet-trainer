@@ -1,6 +1,11 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
+import { Note } from "../data/note";
+import { Notes } from "../data/notes";
+import { Result } from "../data/result";
+import { SheetReading } from "../data/sheet-reading";
 
 const ADVANCE_IF_WRONG = true;
+const NOTES_AUTORISED = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"];
 
 @Injectable({
   providedIn: "root"
@@ -12,25 +17,12 @@ export class NoteGeneratorService {
   }
 
   private currentNoteNumber: number;
-  private noteList: Array<string>;
+  private noteList: Array<Note>;
 
-  private randomNote(): string {
-    return "C";
-  }
+  resultEmitter = new EventEmitter<Result>();
+  sheetReadingtEmitter = new EventEmitter<SheetReading>();
 
-  private advance(): void {
-    const size = this.noteList.length;
-    if (size === 0) {
-      throw new Error("Note list has never been defined. ");
-    }
-    if (this.currentNoteNumber >= size) {
-      this.generateRandomNoteList(size);
-    } else {
-      this.currentNoteNumber++;
-    }
-  }
-
-  public generateRandomNoteList(size: number): Array<string> {
+  public generateRandomNoteList(size: number): Array<Note> {
     this.currentNoteNumber = 0;
     this.noteList = [];
     for (let i = 0; i < size; i++) {
@@ -39,19 +31,37 @@ export class NoteGeneratorService {
     return this.noteList;
   }
 
-  public checkIfRightNote(note: string): boolean {
-    return this.checkIfRightNoteAndAdvance(note, ADVANCE_IF_WRONG);
+  public checkIfRightNote(note: Note) {
+    this.checkIfRightNoteAndAdvance(note, ADVANCE_IF_WRONG);
   }
 
-  public checkIfRightNoteAndAdvance(
-    note: string,
-    advanceIfWrong: boolean
-  ): boolean {
+  public checkIfRightNoteAndAdvance(note: Note, advanceIfWrong: boolean) {
     const res: boolean = this.noteList[this.currentNoteNumber] === note;
     if (res || advanceIfWrong) {
       this.advance();
+    } else {
+      this.sheetReadingtEmitter.emit(SheetReading.STAY);
     }
-    // TODO : appeler right wrong pour lui dire le résultat
-    return res;
+    this.resultEmitter.emit(res ? Result.RIGHT : Result.WRONG);
+  }
+
+  private advance(): void {
+    const size = this.noteList.length;
+    if (size === 0) {
+      throw new Error("Note list has never been defined. ");
+    }
+    if (this.currentNoteNumber >= size - 1) {
+      this.sheetReadingtEmitter.emit(SheetReading.END_SHEET);
+      this.generateRandomNoteList(size);
+    } else {
+      this.sheetReadingtEmitter.emit(SheetReading.ADVANCE);
+      this.currentNoteNumber++;
+    }
+  }
+
+  private randomNote(): Note {
+    return Notes.getNoteByName(
+      NOTES_AUTORISED[Math.floor(Math.random() * NOTES_AUTORISED.length)]
+    );
   }
 }

@@ -26,4 +26,7 @@ export class Note {
     this.vexFlowOctave = vexFlowOctave;
     this.midi = midi;
   }
+  public tostring(): string {
+    return `Note(name : ${this.name}, midi : ${this.midi})`;
+  }
 }
