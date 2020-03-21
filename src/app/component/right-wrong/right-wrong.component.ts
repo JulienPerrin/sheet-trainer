@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Result } from "src/app/data/result";
 import { NoteGeneratorService } from "src/app/service/note-generator.service";
 

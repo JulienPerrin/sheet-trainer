@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Note } from "src/app/data/note";
-import { SheetReading } from "src/app/data/sheet-reading";
 import { NoteGeneratorService } from "../../service/note-generator.service";
 
 declare const Vex: any;

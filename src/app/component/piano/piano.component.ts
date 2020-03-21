@@ -1,12 +1,6 @@
-import {
-  Component,
-  OnInit,
-  AfterContentInit,
-  AfterViewInit
-} from "@angular/core";
-import { NoteOutputService } from "../../service/note-output.service";
-import { Note } from "src/app/data/note";
+import { AfterViewInit, Component } from "@angular/core";
 import { Notes } from "src/app/data/notes";
+import { NoteOutputService } from "../../service/note-output.service";
 
 declare const piano: any;
 
@@ -41,20 +35,20 @@ export class PianoComponent implements AfterViewInit {
       },
       false
     );
-    const range = PIANO_PARAMS.range;
-    console.log("subnotes", Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name));
     for (const note of Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name)) {
       if (document.querySelector("." + note.name)) {
         document.querySelector("." + note.name).addEventListener(
           "click",
           () => {
-            console.log("toto");
             this.jouerNote(note.name);
           },
           false
         );
       } else {
-        console.log("pas glop : ", note.name);
+        console.log(
+          "Not good, a note in the piano on screen is unknown : ",
+          note.name
+        );
       }
     }
   }
