@@ -45,8 +45,12 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css",
+              "node_modules/beautiful-piano/styles.css"
+            ],
             "scripts": [
+              "node_modules/beautiful-piano/dist/piano.js",
               "node_modules/midicube/releases/midicube.js",
               "node_modules/vexflow/releases/vexflow-debug.js"
             ]

@@ -92,6 +92,16 @@ export class Notes {
     new Note("C8", "C", 8, 108)
   ];
 
+  public static getSubnotes(firstNote: string, lastNote: string) {
+    const firstIndex = this.NOTES.findIndex(note => {
+      return note.name === firstNote;
+    });
+    const lastIndex = this.NOTES.findIndex(note => {
+      return note.name === lastNote;
+    });
+    return this.NOTES.slice(firstIndex, lastIndex + 1);
+  }
+
   public static getNoteByMidi(midi: number): Note {
     return Notes.NOTES.filter(note => {
       return note.midi === midi;
