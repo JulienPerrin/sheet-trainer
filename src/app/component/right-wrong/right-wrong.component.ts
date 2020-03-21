@@ -2,8 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Result } from "src/app/data/result";
 import { NoteGeneratorService } from "src/app/service/note-generator.service";
 
-declare const MIDI: any;
-
 @Component({
   selector: "app-right-wrong",
   templateUrl: "./right-wrong.component.html",
