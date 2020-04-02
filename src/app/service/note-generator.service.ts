@@ -31,11 +31,14 @@ export class NoteGeneratorService {
     return this.noteList;
   }
 
-  public checkIfRightNote(note: Note) {
-    this.checkIfRightNoteAndAdvance(note, ADVANCE_IF_WRONG);
+  public checkIfRightNote(note: Note): boolean {
+    return this.checkIfRightNoteAndAdvance(note, ADVANCE_IF_WRONG);
   }
 
-  public checkIfRightNoteAndAdvance(note: Note, advanceIfWrong: boolean) {
+  public checkIfRightNoteAndAdvance(
+    note: Note,
+    advanceIfWrong: boolean
+  ): boolean {
     const res: boolean = this.noteList[this.currentNoteNumber] === note;
     if (res || advanceIfWrong) {
       this.advance();
@@ -43,6 +46,7 @@ export class NoteGeneratorService {
       this.sheetReadingtEmitter.emit(SheetReading.STAY);
     }
     this.resultEmitter.emit(res ? Result.RIGHT : Result.WRONG);
+    return res;
   }
 
   private advance(): void {

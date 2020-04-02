@@ -28,13 +28,6 @@ export class PianoComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     piano(document.getElementById("piano"), PIANO_PARAMS);
-    document.querySelector(".C4").addEventListener(
-      "click",
-      () => {
-        this.jouerNote("C4");
-      },
-      false
-    );
     for (const note of Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name)) {
       if (document.querySelector("." + note.name)) {
         document.querySelector("." + note.name).addEventListener(

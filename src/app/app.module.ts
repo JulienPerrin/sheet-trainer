@@ -15,7 +15,7 @@ import { NoteOutputService } from "./service/note-output.service";
     PianoComponent,
     RightWrongComponent
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, NgbModule],
   providers: [NoteInputService, NoteOutputService],
   bootstrap: [AppComponent]
 })

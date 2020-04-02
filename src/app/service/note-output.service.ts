@@ -1,8 +1,11 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 
 import MIDIMessageEvent from "web-midi-api";
 import { NoteGeneratorService } from "./note-generator.service";
 import { Notes } from "../data/notes";
+import { NotePlayed } from "../data/note-played";
+import { Note } from "../data/note";
+import { Result } from "../data/result";
 
 declare const MIDI: any;
 
@@ -12,11 +15,14 @@ declare const MIDI: any;
 export class NoteOutputService {
   constructor(private noteGeneratorService: NoteGeneratorService) {}
 
+  notePlayedEmitter = new EventEmitter<NotePlayed>();
+
   public jouerNote(note: string): void {
-    this.noteGeneratorService.checkIfRightNote(Notes.getNoteByName(note));
+    const noteAsNote: Note = Notes.getNoteByName(note);
+    this.playNote(noteAsNote);
     MIDI.setVolume(0, 127);
-    MIDI.noteOn(0, MIDI.keyToNote[note], 127);
-    MIDI.noteOff(0, MIDI.keyToNote[note], 127, 1);
+    MIDI.noteOn(0, noteAsNote.midi, 127);
+    MIDI.noteOff(0, noteAsNote.midi, 127, 1);
   }
 
   public loadPianoSound(callback: () => void): void {
@@ -44,9 +50,7 @@ export class NoteOutputService {
             velocityNoteJouee
           );
           MIDI.noteOn(0, noteJouee, velocityNoteJouee);
-          this.noteGeneratorService.checkIfRightNote(
-            Notes.getNoteByMidi(noteJouee)
-          );
+          this.playNote(noteAsNote);
           return noteJouee;
         } else {
           console.log("release : ", Notes.getNoteByMidi(noteJouee));
@@ -59,5 +63,16 @@ export class NoteOutputService {
         break;
     }
     return null;
+  }
+
+  private playNote(note: Note): void {
+    this.notePlayedEmitter.emit(
+      new NotePlayed(
+        note,
+        this.noteGeneratorService.checkIfRightNote(note)
+          ? Result.RIGHT
+          : Result.WRONG
+      )
+    );
   }
 }
