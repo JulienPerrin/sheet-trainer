@@ -1,7 +1,7 @@
 import { Note } from "./note";
 
 export class Notes {
-  public static NOTES: Array<Note> = [
+  public static readonly NOTES: Array<Note> = [
     new Note("A0", "A", 0, 21),
     new Note("Bb0", "BB", 0, 22),
     new Note("B0", "B", 0, 23),
@@ -92,7 +92,7 @@ export class Notes {
     new Note("C8", "C", 8, 108)
   ];
 
-  public static getSubnotes(firstNote: string, lastNote: string) {
+  public static getSubnotes(firstNote: string, lastNote: string): Note[] {
     const firstIndex = this.NOTES.findIndex(note => {
       return note.name === firstNote;
     });

@@ -16,10 +16,10 @@ JSON.stringify(Object.entries(MIDI.keyToNote).map(entry => {
 */
 export class Note {
   constructor(
-    public name: string,
-    public vexFlowName: string,
-    public vexFlowOctave: number,
-    public midi: number
+    public readonly name: string,
+    public readonly vexFlowName: string,
+    public readonly vexFlowOctave: number,
+    public readonly midi: number
   ) {
     this.name = name;
     this.vexFlowName = vexFlowName;

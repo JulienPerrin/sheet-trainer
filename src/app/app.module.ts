@@ -7,16 +7,17 @@ import { PianoComponent } from "./component/piano/piano.component";
 import { SheetComponent } from "./component/sheet/sheet.component";
 import { NoteInputService } from "./service/note-input.service";
 import { NoteOutputService } from "./service/note-output.service";
+import { TeacherService } from "./service/teacher.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     SheetComponent,
     PianoComponent,
-    RightWrongComponent
+    RightWrongComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, NgbModule],
-  providers: [NoteInputService, NoteOutputService],
-  bootstrap: [AppComponent]
+  imports: [BrowserModule, AppRoutingModule],
+  providers: [NoteInputService, NoteOutputService, TeacherService],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

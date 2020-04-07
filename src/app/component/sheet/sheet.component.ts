@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Note } from "src/app/data/note";
-import { NoteGeneratorService } from "../../service/note-generator.service";
 
 declare const Vex: any;
 
@@ -13,13 +12,13 @@ const STAVE_HEIGHT = 120;
 @Component({
   selector: "app-sheet",
   templateUrl: "./sheet.component.html",
-  styleUrls: ["./sheet.component.css"]
+  styleUrls: ["./sheet.component.css"],
 })
 export class SheetComponent implements OnInit {
-  constructor(private noteGeneratorService: NoteGeneratorService) {}
+  constructor() {}
 
   private context: any;
-  private plisteNotes: Array<Note>;
+  private _listeNotes: Array<Note>;
 
   ngOnInit(): void {
     // Create an SVG renderer and attach it to the DIV element named "boo".
@@ -32,13 +31,13 @@ export class SheetComponent implements OnInit {
   }
 
   get listeNotes(): Array<Note> {
-    return this.plisteNotes;
+    return this._listeNotes;
   }
 
   @Input() set listeNotes(listeNotes: Array<Note>) {
     if (listeNotes.length > 0) {
       console.log(listeNotes);
-      this.plisteNotes = listeNotes;
+      this._listeNotes = listeNotes;
 
       this.context.clear();
 
@@ -54,15 +53,15 @@ export class SheetComponent implements OnInit {
       // Create a voice in 4/4 and add above notes
       const voice = new VF.Voice({
         num_beats: listeNotes.length,
-        beat_value: 4
+        beat_value: 4,
       });
       voice.addTickables(
         listeNotes.map(
-          note =>
+          (note) =>
             new VF.StaveNote({
               clef: "treble",
               keys: [note.vexFlowName + "/" + note.vexFlowOctave],
-              duration: "q"
+              duration: "q",
             })
         )
       );
