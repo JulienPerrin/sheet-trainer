@@ -112,7 +112,10 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
-            "scripts": []
+            "scripts": [
+              "node_modules/beautiful-piano/dist/piano.js",
+              "node_modules/vexflow/releases/vexflow-debug.js"
+            ]
           }
         },
         "lint": {

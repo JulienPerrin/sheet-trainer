@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, AsyncSubject, ReplaySubject } from "rxjs";
 import { Note } from "../data/note";
 import { NoteHeard } from "../data/note-heard";
 import { NotePlayed } from "../data/note-played";
@@ -15,7 +15,7 @@ declare const MIDI: any;
 export class NoteOutputService {
   constructor() {}
 
-  private pianoPreparator = new Subject<SpeakersReady>();
+  private pianoPreparator = new ReplaySubject<SpeakersReady>(1);
   private _spectator = new Subject<NoteHeard>();
 
   public loadPianoSound(): Observable<SpeakersReady> {
@@ -38,7 +38,7 @@ export class NoteOutputService {
     return this._spectator.asObservable();
   }
 
-  public jouerNote(note: string): void {
+  public playNote(note: string): void {
     const noteAsNote: Note = Notes.getNoteByName(note);
     MIDI.setVolume(0, 127);
     MIDI.noteOn(0, noteAsNote.midi, 127);

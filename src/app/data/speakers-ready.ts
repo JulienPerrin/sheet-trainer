@@ -1,5 +1,3 @@
 export class SpeakersReady {
-  constructor(public readonly instrumentName: string) {
-    this.instrumentName = instrumentName;
-  }
+  constructor(public readonly instrumentName: string) {}
 }

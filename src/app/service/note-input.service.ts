@@ -61,6 +61,8 @@ export class NoteInputService {
         console.log("release : ", noteAsNote);
         this._pianist.next(new NotePlayed(noteAsNote, UpDown.UP, 0));
         break;
+      default:
+        console.warn("unknown command", message);
     }
   }
 }

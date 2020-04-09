@@ -11,17 +11,17 @@ const PIANO_PARAMS = {
     startOctave: FIRST_NOTE.vexFlowOctave,
     startKey: FIRST_NOTE.name[0],
     endOctave: LAST_NOTE.vexFlowOctave,
-    endKey: LAST_NOTE.name[0]
+    endKey: LAST_NOTE.name[0],
   },
   lang: "en",
   notation: "scientific", // useful if we want to add notation one day
-  namesMode: "sharp"
+  namesMode: "sharp",
 };
 
 @Component({
   selector: "app-piano",
   templateUrl: "./piano.component.html",
-  styleUrls: ["./piano.component.css"]
+  styleUrls: ["./piano.component.css"],
 })
 export class PianoComponent implements AfterViewInit {
   constructor(public noteOutputService: NoteOutputService) {}
@@ -29,24 +29,20 @@ export class PianoComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     piano(document.getElementById("piano"), PIANO_PARAMS);
     for (const note of Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name)) {
-      if (document.querySelector("." + note.name)) {
-        document.querySelector("." + note.name).addEventListener(
+      const key = document.querySelector(`.${note.name}`);
+      if (key) {
+        key.addEventListener(
           "click",
           () => {
-            this.jouerNote(note.name);
+            this.noteOutputService.playNote(note.name);
           },
           false
         );
       } else {
         console.log(
-          "Not good, a note in the piano on screen is unknown : ",
-          note.name
+          `Not good, a note in the piano on screen is unknown : ${note.name}`
         );
       }
     }
-  }
-
-  jouerNote(note: string) {
-    this.noteOutputService.jouerNote(note);
   }
 }
