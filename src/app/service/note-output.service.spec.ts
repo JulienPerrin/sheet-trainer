@@ -9,6 +9,8 @@ let setVolume = 0;
 let noteOn = 0;
 let noteOff = 0;
 
+let throwErrorOnLoadPlugin = false;
+
 declare global {
   interface Window {
     MIDI: any;
@@ -16,10 +18,10 @@ declare global {
 }
 window.MIDI = {
   loadPlugin: (o: any) => {
-    if (o.instrument === "acoustic_grand_piano") {
-      o.onsuccess();
-    } else {
+    if (throwErrorOnLoadPlugin) {
       o.onerror(new Error("unknown instrument"));
+    } else {
+      o.onsuccess();
     }
   },
   setVolume: (channel, velocity) => {
@@ -35,6 +37,10 @@ window.MIDI = {
 
 describe("NoteOutputService", () => {
   const service: NoteOutputService = new NoteOutputService();
+
+  beforeEach(() => {
+    throwErrorOnLoadPlugin = false;
+  });
 
   it("should load the accoustic grand piano so that we can output sound", (done) => {
     service.loadPianoSound().subscribe((speakersReady: SpeakersReady) => {
@@ -74,5 +80,20 @@ describe("NoteOutputService", () => {
     );
     expect(noteOn).toBe(noteOnInit + 1);
     expect(noteOff).toBe(noteOffInit + 1);
+  });
+
+  it("should not output MIDI event if upDown not set", () => {
+    expect(() =>
+      service.outputNoteEvent(
+        new NotePlayed(Notes.getNoteByName("C4"), null, 127)
+      )
+    ).toThrow(new Error("You should not be here!"));
+  });
+
+  it("should not output MIDI event if upDown not set", () => {
+    throwErrorOnLoadPlugin = true;
+    expect(() => service.loadPianoSound()).toThrow(
+      new Error("Instrument cannot be loaded.")
+    );
   });
 });

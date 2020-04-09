@@ -30,19 +30,13 @@ export class PianoComponent implements AfterViewInit {
     piano(document.getElementById("piano"), PIANO_PARAMS);
     for (const note of Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name)) {
       const key = document.querySelector(`.${note.name}`);
-      if (key) {
-        key.addEventListener(
-          "click",
-          () => {
-            this.noteOutputService.playNote(note.name);
-          },
-          false
-        );
-      } else {
-        console.log(
-          `Not good, a note in the piano on screen is unknown : ${note.name}`
-        );
-      }
+      key.addEventListener(
+        "click",
+        () => {
+          this.noteOutputService.playNote(note.name);
+        },
+        false
+      );
     }
   }
 }

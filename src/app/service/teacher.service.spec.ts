@@ -31,6 +31,27 @@ describe("TeacherService", () => {
     sub.unsubscribe();
   });
 
+  it("should validate note and advance until end sheet", (done: DoneFn) => {
+    const notes = service.generateRandomNoteList(2);
+    const sub1 = service.teacher.subscribe((result: Result) => {
+      expect(result.played.name).toBe(notes[0].name);
+      expect(result.expected.name).toBe(notes[0].name);
+      expect(result.rightWrong).toBe(RightWrong.RIGHT);
+      expect(result.sheetReading).toBe(SheetReading.ADVANCE);
+    });
+    service.checkIfRightNote(notes[0]);
+    sub1.unsubscribe();
+    const sub2 = service.teacher.subscribe((result: Result) => {
+      expect(result.played.name).toBe(notes[1].name);
+      expect(result.expected.name).toBe(notes[1].name);
+      expect(result.rightWrong).toBe(RightWrong.RIGHT);
+      expect(result.sheetReading).toBe(SheetReading.END_SHEET);
+      done();
+    });
+    service.checkIfRightNote(notes[1]);
+    sub2.unsubscribe();
+  });
+
   it("should validate note when right and advance even if it should not advance if wrong", (done: DoneFn) => {
     const notes = service.generateRandomNoteList(2);
     const sub = service.teacher.subscribe((result: Result) => {
@@ -71,5 +92,15 @@ describe("TeacherService", () => {
       false
     );
     sub.unsubscribe();
+  });
+
+  it("should not advance if empty note list", () => {
+    const notes = service.generateRandomNoteList(0);
+    expect(() => {
+      service.checkIfRightNoteAndAdvance(
+        new Note("unknown", "unknown", -1, -1),
+        true
+      );
+    }).toThrow(new Error("Note list has never been defined. "));
   });
 });

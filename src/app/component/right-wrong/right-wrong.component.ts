@@ -18,7 +18,7 @@ export class RightWrongComponent implements OnInit, OnDestroy {
   right: number;
   wrong: number;
 
-  sub: Subscription;
+  sub = new Subscription();
 
   ngOnInit(): void {
     this.right = 0;
@@ -37,8 +37,6 @@ export class RightWrongComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
+    this.sub.unsubscribe();
   }
 }

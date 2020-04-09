@@ -18,11 +18,14 @@ describe("SheetComponent", () => {
     comp.ngOnInit();
   });
 
-  it("should load partition", () => {
+  it("should load partition and be resilient", () => {
     comp.listeNotes = [Notes.getNoteByName("C4")];
+    expect(comp.listeNotes.length).toBe(1);
     const noteOnPartition = fixture.nativeElement.querySelector(
       ".vf-stavenote"
     );
+    expect(!!noteOnPartition).toBeTrue();
+    comp.listeNotes = [];
     expect(!!noteOnPartition).toBeTrue();
   });
 });

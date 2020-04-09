@@ -17,6 +17,8 @@ export class NoteInputService {
 
   private device: MIDIInput;
   private _pianist = new Subject<NotePlayed>();
+  private sustain = false;
+  private notesSustained: Note[] = [];
 
   public loadMidiDevice(): Observable<NotePlayed> {
     from<MIDIInput>(navigator.requestMIDIAccess())
@@ -53,16 +55,34 @@ export class NoteInputService {
             new NotePlayed(noteAsNote, UpDown.DOWN, velocityNotePlayed)
           );
         } else {
-          console.log("release : ", noteAsNote);
-          this._pianist.next(new NotePlayed(noteAsNote, UpDown.UP, 0));
+          this.releaseKey(noteAsNote);
         }
         break;
       case 128:
-        console.log("release : ", noteAsNote);
-        this._pianist.next(new NotePlayed(noteAsNote, UpDown.UP, 0));
+        this.releaseKey(noteAsNote);
+        break;
+      case 176: // sustain
+        this.sustain = velocityNotePlayed > 0;
+        console.log("sustain", this.sustain);
+        if (!this.sustain) {
+          for (const noteSustained of this.notesSustained) {
+            if (noteSustained) {
+              this.releaseKey(noteSustained);
+            }
+          }
+        }
         break;
       default:
         console.warn("unknown command", message);
+    }
+  }
+
+  private releaseKey(note: Note) {
+    console.log("release : ", note);
+    if (!this.sustain) {
+      this._pianist.next(new NotePlayed(note, UpDown.UP, 0));
+    } else {
+      this.notesSustained.push(note);
     }
   }
 }
