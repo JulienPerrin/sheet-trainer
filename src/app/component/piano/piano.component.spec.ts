@@ -1,8 +1,20 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoteOutputService } from "src/app/service/note-output.service";
 import { PianoComponent } from "./piano.component";
+import { NotePlayed } from "src/app/data/note-played";
+import { Subject } from "rxjs";
+import { Notes } from "src/app/data/notes";
+import { UpDown } from "src/app/data/up-down";
+import { NoteInputService } from "src/app/service/note-input.service";
 
 let playNote: number;
+const pianist = new Subject<NotePlayed>();
+
+class MockNoteInputService {
+  get pianist() {
+    return pianist.asObservable();
+  }
+}
 
 class MockNoteOutputService {
   playNote(note: string) {
@@ -19,6 +31,7 @@ describe("PianoComponent", () => {
     TestBed.configureTestingModule({
       providers: [
         PianoComponent,
+        { provide: NoteInputService, useClass: MockNoteInputService },
         { provide: NoteOutputService, useClass: MockNoteOutputService },
       ],
     }).compileComponents();
@@ -41,5 +54,27 @@ describe("PianoComponent", () => {
     c4.click();
 
     expect(playNote).toBe(1);
+  });
+
+  it("should load piano on screen and activate C4 if C4 is played by the pianist and then desactivate it", () => {
+    comp.ngAfterViewInit();
+
+    pianist.next(new NotePlayed(Notes.getNoteByName("C4"), UpDown.DOWN, 127));
+    expect(
+      fixture.nativeElement.querySelector(".C4").getAttribute("class")
+    ).toBe("anchor C4 active");
+    pianist.next(new NotePlayed(Notes.getNoteByName("C4"), UpDown.UP, 0));
+    expect(
+      fixture.nativeElement.querySelector(".C4").getAttribute("class")
+    ).toBe("anchor C4");
+  });
+
+  it("should throw error if pianist play key with UP/DOWN not set", () => {
+    comp.ngAfterViewInit();
+
+    pianist.next(new NotePlayed(Notes.getNoteByName("C4"), null, 127));
+    expect(
+      fixture.nativeElement.querySelector(".C4").getAttribute("class")
+    ).toBe("anchor C4");
   });
 });

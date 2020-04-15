@@ -32,6 +32,9 @@ describe("NoteInputService", () => {
   const simulateKeyUpC4Bis = () => {
     midiInputs[0].inputs.get("input-0").onmidimessage({ data: [144, 60, 0] });
   };
+  const simulateKeyUpC4Tris = () => {
+    midiInputs[0].inputs.get("input-0").onmidimessage({ data: [144, 60] });
+  };
   const simulateSustain = () => {
     midiInputs[0].inputs.get("input-0").onmidimessage({ data: [176, 64, 127] });
   };
@@ -60,11 +63,11 @@ describe("NoteInputService", () => {
   });
 
   it("should load the piano that is connected to the PC, detect sustain, sustain notes and stop sustaining them", (done) => {
-    const obs = service.loadMidiDevice();
+    service.loadMidiDevice();
 
     simulateSustain();
 
-    const sub1 = obs.subscribe((notePlayed: NotePlayed) => {
+    const sub1 = service.pianist.subscribe((notePlayed: NotePlayed) => {
       expect(notePlayed.note.name).toBe("C4");
       expect(notePlayed.upDown).toBe(UpDown.DOWN);
       expect(notePlayed.velocity).toBe(127);
@@ -72,13 +75,13 @@ describe("NoteInputService", () => {
     simulateKeyDownC4();
     sub1.unsubscribe();
 
-    const sub2 = obs.subscribe((notePlayed: NotePlayed) => {
+    const sub2 = service.pianist.subscribe((notePlayed: NotePlayed) => {
       expect(false).toBeTrue();
     });
     simulateKeyUpC4();
     sub2.unsubscribe();
 
-    const sub3 = obs.subscribe((notePlayed: NotePlayed) => {
+    const sub3 = service.pianist.subscribe((notePlayed: NotePlayed) => {
       expect(notePlayed.note.name).toBe("C4");
       expect(notePlayed.upDown).toBe(UpDown.UP);
       expect(notePlayed.velocity).toBe(0);
@@ -86,6 +89,23 @@ describe("NoteInputService", () => {
     });
     simulateStopSustain();
     sub3.unsubscribe();
+
+    const sub4 = service.pianist.subscribe((notePlayed: NotePlayed) => {
+      expect(notePlayed.note.name).toBe("C4");
+      expect(notePlayed.upDown).toBe(UpDown.DOWN);
+      expect(notePlayed.velocity).toBe(127);
+    });
+    simulateKeyDownC4();
+    sub4.unsubscribe();
+
+    const sub5 = service.pianist.subscribe((notePlayed: NotePlayed) => {
+      expect(notePlayed.note.name).toBe("C4");
+      expect(notePlayed.upDown).toBe(UpDown.UP);
+      expect(notePlayed.velocity).toBe(0);
+      done();
+    });
+    simulateKeyUpC4Tris();
+    sub5.unsubscribe();
   });
 
   it("should load the piano that is connected to the PC and detect key up", (done) => {

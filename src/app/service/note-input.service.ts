@@ -41,6 +41,10 @@ export class NoteInputService {
     return this._pianist.asObservable();
   }
 
+  public get pianist() {
+    return this._pianist.asObservable();
+  }
+
   private dealWithMidiMessageEvent(message: MIDIMessageEvent): void {
     console.log("message", message);
     const command = message.data[0];
@@ -66,10 +70,9 @@ export class NoteInputService {
         console.log("sustain", this.sustain);
         if (!this.sustain) {
           for (const noteSustained of this.notesSustained) {
-            if (noteSustained) {
-              this.releaseKey(noteSustained);
-            }
+            this.releaseKey(noteSustained);
           }
+          this.notesSustained = [];
         }
         break;
       default:

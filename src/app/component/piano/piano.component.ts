@@ -1,6 +1,9 @@
 import { AfterViewInit, Component } from "@angular/core";
+import { NotePlayed } from "src/app/data/note-played";
 import { Notes } from "src/app/data/notes";
+import { NoteInputService } from "src/app/service/note-input.service";
 import { NoteOutputService } from "../../service/note-output.service";
+import { UpDown } from "src/app/data/up-down";
 
 declare const piano: any;
 
@@ -24,7 +27,10 @@ const PIANO_PARAMS = {
   styleUrls: ["./piano.component.css"],
 })
 export class PianoComponent implements AfterViewInit {
-  constructor(public noteOutputService: NoteOutputService) {}
+  constructor(
+    public noteInputService: NoteInputService,
+    public noteOutputService: NoteOutputService
+  ) {}
 
   ngAfterViewInit(): void {
     piano(document.getElementById("piano"), PIANO_PARAMS);
@@ -38,5 +44,21 @@ export class PianoComponent implements AfterViewInit {
         false
       );
     }
+    this.noteInputService.pianist.subscribe((notePlayed: NotePlayed) => {
+      switch (notePlayed.upDown) {
+        case UpDown.DOWN:
+          document
+            .querySelector(`.${notePlayed.note.name}`)
+            .classList.add("active");
+          break;
+        case UpDown.UP:
+          document
+            .querySelector(`.${notePlayed.note.name}`)
+            .classList.remove("active");
+          break;
+        default:
+          throw new Error("not supposed to happen, never UP or DOWN");
+      }
+    });
   }
 }

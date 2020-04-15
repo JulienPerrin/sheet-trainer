@@ -56,7 +56,7 @@ describe("workspace-project App", () => {
   it("should change first note after 8 tries", () => {
     page.navigateTo();
     browser.takeScreenshot().then((png) => {
-      writeScreenShot(png, "home.png");
+      writeScreenShot(png, "home3.png");
     });
     expect(page.getFirstNote()).toBe("vf-auto1006");
     for (let i = 0; i < 8; i++) {
@@ -64,7 +64,7 @@ describe("workspace-project App", () => {
     }
     expect(page.getFirstNote()).toBe("vf-auto1100");
     browser.takeScreenshot().then((png) => {
-      writeScreenShot(png, "home2.png");
+      writeScreenShot(png, "home4.png");
     });
   });
 
