@@ -1,14 +1,14 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { NotePlayed } from "src/app/data/note-played";
 import { Notes } from "src/app/data/notes";
+import { UpDown } from "src/app/data/up-down";
 import { NoteInputService } from "src/app/service/note-input.service";
 import { NoteOutputService } from "../../service/note-output.service";
-import { UpDown } from "src/app/data/up-down";
 
 declare const piano: any;
 
-const FIRST_NOTE = Notes.getNoteByName("C4");
-const LAST_NOTE = Notes.getNoteByName("B4");
+const FIRST_NOTE = Notes.getNoteByName("A2");
+const LAST_NOTE = Notes.getNoteByName("C6");
 const PIANO_PARAMS = {
   range: {
     startOctave: FIRST_NOTE.vexFlowOctave,
@@ -34,6 +34,7 @@ export class PianoComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     piano(document.getElementById("piano"), PIANO_PARAMS);
+    document.getElementById("piano").classList.add("piano-show-names");
     for (const note of Notes.getSubnotes(FIRST_NOTE.name, LAST_NOTE.name)) {
       const key = document.querySelector(`.${note.name}`);
       key.addEventListener(
