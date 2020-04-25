@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NoteOutputService } from "src/app/service/note-output.service";
-import { PianoComponent } from "./piano.component";
-import { NotePlayed } from "src/app/data/note-played";
 import { Subject } from "rxjs";
+import { NotePlayed } from "src/app/data/note-played";
 import { Notes } from "src/app/data/notes";
 import { UpDown } from "src/app/data/up-down";
 import { NoteInputService } from "src/app/service/note-input.service";
+import { NoteOutputService } from "src/app/service/note-output.service";
+import { PianoComponent } from "./piano.component";
 
 let playNote: number;
 const pianist = new Subject<NotePlayed>();
@@ -71,10 +71,6 @@ describe("PianoComponent", () => {
 
   it("should throw error if pianist play key with UP/DOWN not set", () => {
     comp.ngAfterViewInit();
-
     pianist.next(new NotePlayed(Notes.getNoteByName("C4"), null, 127));
-    expect(
-      fixture.nativeElement.querySelector(".C4").getAttribute("class")
-    ).toBe("anchor C4");
   });
 });
