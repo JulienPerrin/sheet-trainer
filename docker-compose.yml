@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+
+  node-with-ng-cli:
+    image: node-with-ng-cli
+    container_name: node-with-ng-cli
+    build:
+      context: node-with-ng-cli
+
+  sheet-trainer:
+    image: sheet-trainer
+    container_name: sheet-trainer
+    build:
+      context: sheet-trainer
+    depends_on:
+      - node-with-ng-cli
+    ports:
+      - 80:80
