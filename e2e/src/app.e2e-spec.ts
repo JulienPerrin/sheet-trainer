@@ -1,6 +1,6 @@
-import { AppPage } from "./app.po";
-import { browser, logging } from "protractor";
 import * as fs from "fs";
+import { browser, logging } from "protractor";
+import { AppPage } from "./app.po";
 
 // abstract writing screen shot to a file
 function writeScreenShot(extension: string, filename: string) {
@@ -62,7 +62,7 @@ describe("workspace-project App", () => {
     for (let i = 0; i < 8; i++) {
       page.getPiano().click();
     }
-    expect(page.getFirstNote()).toBe("vf-auto1100");
+    expect(page.getFirstNote()).not.toBe("vf-auto1006");
     browser.takeScreenshot().then((png) => {
       writeScreenShot(png, "home4.png");
     });
