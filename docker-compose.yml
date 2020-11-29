@@ -1,0 +1,15 @@
+﻿version: "3.8"
+
+services:
+  sheet-trainer:
+    image: sheet_trainer:latest
+    container_name: sheet_trainer
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ENV={ENV}
+    volumes:
+      - ./node_modules:/usr/src/sheet-trainer/node_modules
+    ports:
+      - "4200:4200"
