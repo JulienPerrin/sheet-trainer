@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { NotePlayed } from "src/app/data/note-played";
 import { Notes } from "src/app/data/notes";
@@ -27,7 +27,7 @@ describe("PianoComponent", () => {
   let comp: PianoComponent;
   let fixture: ComponentFixture<PianoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         PianoComponent,

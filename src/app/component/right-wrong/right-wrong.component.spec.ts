@@ -1,5 +1,5 @@
 import { ApplicationRef } from "@angular/core";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { Subject } from "rxjs";
 import { Result } from "src/app/data/result";
 import { RightWrong } from "src/app/data/right-wrong";
@@ -26,7 +26,7 @@ describe("RightWrongComponent", () => {
   let right: HTMLElement;
   let wrong: HTMLElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         RightWrongComponent,

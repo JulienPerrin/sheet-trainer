@@ -15,7 +15,7 @@ import { NotePlayed } from "./data/note-played";
 import { Result } from "./data/result";
 import { NoteHeard } from "./data/note-heard";
 import { AppComponent } from "./app.component";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { Notes } from "./data/notes";
 import { UpDown } from "./data/up-down";
 
@@ -69,7 +69,7 @@ describe("AppComponent", () => {
   let comp: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         AppComponent,

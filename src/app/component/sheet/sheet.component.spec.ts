@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { SheetComponent } from "./sheet.component";
 import { Notes } from "src/app/data/notes";
 
@@ -6,7 +6,7 @@ describe("SheetComponent", () => {
   let comp: SheetComponent;
   let fixture: ComponentFixture<SheetComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [SheetComponent],
     }).compileComponents();
