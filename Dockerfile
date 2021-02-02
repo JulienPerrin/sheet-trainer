@@ -1,8 +1,4 @@
-FROM node:12 as node-with-ng-cli
-
-RUN npm install -g @angular/cli
-
-FROM node-with-ng-cli as builder
+FROM node:lts-alpine
 
 WORKDIR /opt/ng/
 COPY . .
