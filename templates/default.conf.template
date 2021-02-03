@@ -1,0 +1,11 @@
+server {
+    listen 443 ssl;
+    server_name  localhost;
+
+    ssl_certificate /etc/certificat/89411923_julien-perrin.name.cert;
+    ssl_certificate_key /etc/certificat/89411923_julien-perrin.name.key;
+
+    root /opt/sheet-trainer;
+    try_files $uri $uri/ /opt/sheet-trainer/index.html;
+
+}
