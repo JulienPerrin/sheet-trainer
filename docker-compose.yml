@@ -9,3 +9,4 @@ services:
       - ./dist/sheet-trainer:/opt/sheet-trainer
     ports:
       - "443:443"
+      - "80:80"
