@@ -1,11 +1,24 @@
 server {
+    listen 80;
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
     listen 443 ssl;
-    server_name  localhost;
 
     ssl_certificate /etc/certificat/89411923_julien-perrin.name.cert;
     ssl_certificate_key /etc/certificat/89411923_julien-perrin.name.key;
 
-    root /opt/sheet-trainer;
-    try_files $uri $uri/ /opt/sheet-trainer/index.html;
+    location = /sheet-trainer/robots.txt {
+        add_header Content-Type text/plain;
+        return 200 "User-agent: *\nAllow: /\n";
+    }
+
+    location /sheet-trainer {
+        root /opt;
+        try_files $uri $uri/ sheet-trainer/index.html;
+    }
 
 }
