@@ -30,7 +30,7 @@
     "fibers": "^4.0.2",
     "html-webpack-plugin": "^3.2.0",
     "midicube": "^0.6.1",
-    "rxjs": "^6.6.3",
+    "rxjs": "^6.6.7",
     "vexflow": "^1.2.90",
     "web-midi-api": "^2.0.7",
     "zone.js": "^0.10.3"
