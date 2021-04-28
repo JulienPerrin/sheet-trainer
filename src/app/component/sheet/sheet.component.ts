@@ -41,75 +41,11 @@ export class SheetComponent implements OnInit {
 
       this.context.clear();
 
-      // ================================================================
-      // ================================================================
+      const staveTreble = this.generateStave("treble");
+      const voiceTreble = this.generateVoice("treble", listeNotes);
 
-      // Create a stave at position 10, 0 of width 400 on the canvas.
-      const staveTreble = new VF.Stave(
-        STAVE_OUTPUT,
-        0,
-        STAVE_WIDTH - STAVE_OUTPUT
-      );
-
-      // Add a clef and time signature.
-      staveTreble.addClef("treble");
-
-      // Connect it to the rendering context and draw!
-      staveTreble.setContext(this.context).draw();
-
-      // Create a voice in 4/4 and add above notes
-      const voiceTreble = new VF.Voice({
-        num_beats: listeNotes.length,
-        beat_value: 4,
-      });
-      voiceTreble.addTickables(
-        listeNotes.map(
-          (note) =>
-            new VF.StaveNote({
-              clef: "treble",
-              keys: [note.vexFlowName + "/" + note.vexFlowOctave],
-              duration: "q",
-            })
-        )
-      );
-
-      // ================================================================
-      // ================================================================
-
-      // ================================================================
-      // ================================================================
-
-      // Create a stave at position 10, 0 of width 400 on the canvas.
-      const staveBass = new VF.Stave(
-        STAVE_OUTPUT,
-        90,
-        STAVE_WIDTH - STAVE_OUTPUT
-      );
-
-      // Add a clef and time signature.
-      staveBass.addClef("bass");
-
-      // Connect it to the rendering context and draw!
-      staveBass.setContext(this.context).draw();
-
-      // Create a voice in 4/4 and add above notes
-      const voiceBass = new VF.Voice({
-        num_beats: listeNotes.length,
-        beat_value: 4,
-      });
-      voiceBass.addTickables(
-        listeNotes.map(
-          (note) =>
-            new VF.StaveNote({
-              clef: "bass",
-              keys: [note.vexFlowName + "/" + (note.vexFlowOctave - 2)],
-              duration: "q",
-            })
-        )
-      );
-
-      // ================================================================
-      // ================================================================
+      const staveBass = this.generateStave("bass");
+      const voiceBass = this.generateVoice("bass", listeNotes);
 
       // Format and justify the notes to 400 pixels.
       new VF.Formatter()
@@ -121,5 +57,41 @@ export class SheetComponent implements OnInit {
       voiceTreble.draw(this.context, staveTreble);
       voiceBass.draw(this.context, staveBass);
     }
+  }
+
+  private generateStave(clef: string): any {
+      // Create a stave at position 10, 0 of width 400 on the canvas.
+      const stave = new VF.Stave(
+        STAVE_OUTPUT,
+        clef === "bass" ? 90 : 0,
+        STAVE_WIDTH - STAVE_OUTPUT
+      );
+
+      // Add a clef and time signature.
+      stave.addClef(clef);
+
+      // Connect it to the rendering context and draw!
+      stave.setContext(this.context).draw();
+
+      return stave;
+  }
+
+  private generateVoice(clef: string, listeNotes: Array<Note>): any {
+      // Create a voice in 4/4 and add above notes
+      const voice = new VF.Voice({
+        num_beats: listeNotes.length,
+        beat_value: 4,
+      });
+      voice.addTickables(
+        listeNotes.map(
+          (note) =>
+            new VF.StaveNote({
+              clef,
+              keys: [note.vexFlowName + "/" + (note.vexFlowOctave - (clef === "bass" ? 2 : 0))],
+              duration: "q",
+            })
+        )
+      );
+      return voice;
   }
 }
