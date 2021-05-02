@@ -45,13 +45,16 @@ export class SheetComponent implements OnInit {
       const voiceTreble = this.generateVoice("treble", listeNotes);
 
       const staveBass = this.generateStave("bass");
-      const voiceBass = this.generateVoice("bass", listeNotes);
+      const voiceBass = this.generateVoice("bass", []);
 
       // Format and justify the notes to 400 pixels.
       new VF.Formatter()
         .joinVoices([voiceTreble])
         .joinVoices([voiceBass])
-        .format([voiceTreble, voiceBass], STAVE_WIDTH - TREBLE_WIDTH);
+        .format([
+          voiceTreble,
+          voiceBass
+        ], STAVE_WIDTH - TREBLE_WIDTH);
 
       // Render voice
       voiceTreble.draw(this.context, staveTreble);
@@ -94,4 +97,5 @@ export class SheetComponent implements OnInit {
       );
       return voice;
   }
+
 }
