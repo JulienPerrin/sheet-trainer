@@ -8,4 +8,4 @@ cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" || exit
 npm install
 
 npm run build:prod
-rsync -e "ssh" -r ./dist pi@8raspberry:/home/pi/programmation/owncloud_with_docker
+rsync -e "ssh -i .ssh/id_rsa" -r ./dist pi@8raspberry:/home/pi/programmation/owncloud_with_docker
